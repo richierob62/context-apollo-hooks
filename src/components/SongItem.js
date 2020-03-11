@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
-
 import { DELETE_SONG } from '../graphql/mutations';
 import Delete from './Delete';
 import More from './More';
-import { SongContext } from '../context/songs';
+import React from 'react';
+import useAllContexts from '../context/useAllContexts';
 import { useMutation } from '@apollo/react-hooks';
 import useRelatedSongs from '../graphql/useRelatedSongs';
 
@@ -12,7 +11,7 @@ const SongItem = ({ song }) => {
   const [deleteSong] = useMutation(DELETE_SONG);
   if (error) return <div> Something went wrong </div>;
 
-  const { removeSongFromList } = useContext(SongContext);
+  const { songs_removeFromList } = useAllContexts();
 
   const deleteMutation = () => {
     deleteSong({
@@ -23,7 +22,7 @@ const SongItem = ({ song }) => {
       },
     });
 
-    removeSongFromList(song.id);
+    songs_removeFromList(song.id);
   };
 
   return (

@@ -1,15 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 
 import { ADD_SONG } from '../graphql/mutations';
-import { SongContext } from '../context/songs';
+import useAllContexts from '../context/useAllContexts';
 import { useMutation } from '@apollo/react-hooks';
 
 const AddSong = () => {
   const [name, setName] = useState('');
   const [artist, setArtist] = useState('');
   const [lyrics, setLyrics] = useState('');
-  const { addSongToList } = useContext(SongContext);
   const [addSong] = useMutation(ADD_SONG);
+  const { songs_addToList } = useAllContexts();
 
   return (
     <form
@@ -24,9 +24,7 @@ const AddSong = () => {
               lyrics,
             },
           },
-        }).then(response => addSongToList(response.data.createSong));
-        // const songs = [{ name, artist, lyrics }];
-        // console.log(foo);
+        }).then(response => songs_addToList(response.data.createSong));
 
         setName('');
         setLyrics('');

@@ -1,19 +1,23 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import AddSong from './AddSong';
 import Container from 'muicss/lib/react/container';
 import { GET_SONGS } from '../graphql/queries';
-import { SongContext } from '../context/songs';
 import SongItem from './SongItem';
+import useAllContexts from '../context/useAllContexts';
 import { useQuery } from '@apollo/react-hooks';
 
 const Home = () => {
-  const { songs, resetList } = useContext(SongContext);
+  const {
+    songs: { list },
+    songs_setList,
+  } = useAllContexts();
+
   const { data, loading, error } = useQuery(GET_SONGS);
 
   useEffect(() => {
     if (data && data.songs) {
-      resetList(data.songs);
+      songs_setList(data.songs);
     }
   }, [data]);
 
@@ -24,7 +28,7 @@ const Home = () => {
     <Container>
       <AddSong />
       <div className={`song-container`}>
-        {songs.list.map(song => (
+        {list.map(song => (
           <div key={`song-${song.id}`} className={'song-list-item'}>
             <SongItem song={song} />
           </div>

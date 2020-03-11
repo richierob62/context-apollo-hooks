@@ -1,14 +1,14 @@
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 
 import About from './About';
-import Context from '../context';
+import ContextProvider from '../context';
 import Home from './Home';
 import React from 'react';
 
 const App = () => {
   return (
     <Router>
-      <Context>
+      <ContextProvider>
         <Switch>
           <Route exact path="/">
             <Home />
@@ -17,7 +17,7 @@ const App = () => {
             <About />
           </Route>
         </Switch>
-      </Context>
+      </ContextProvider>
     </Router>
   );
 };

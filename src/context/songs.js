@@ -9,18 +9,19 @@ export const SongContext = createContext(intitialState);
 export default ({ children }) => {
   const [songs, setSongs] = useState(intitialState);
 
-  const resetList = list =>
+  const songs_setList = list =>
     setSongs({
+      ...songs,
       list,
     });
 
-  const removeSongFromList = id =>
+  const songs_removeFromList = id =>
     setSongs({
       ...songs,
       list: songs.list.filter(s => s.id !== id),
     });
 
-  const addSongToList = song => {
+  const songs_addToList = song => {
     const list = songs.list.slice();
     list.unshift(song);
     setSongs({
@@ -31,7 +32,12 @@ export default ({ children }) => {
 
   return (
     <SongContext.Provider
-      value={{ songs, resetList, addSongToList, removeSongFromList }}
+      value={{
+        songs,
+        songs_setList,
+        songs_addToList,
+        songs_removeFromList,
+      }}
     >
       {children}
     </SongContext.Provider>

@@ -1,7 +1,8 @@
 import React from 'react';
 import SongContext from './songs';
-import WidgetContext from './widget';
+import WidgetContext from './widgets';
 
+// add all Contexts to this array
 const allContexts = [SongContext, WidgetContext];
 
 export default ({ children }) => {
