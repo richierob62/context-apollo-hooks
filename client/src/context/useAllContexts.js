@@ -1,4 +1,4 @@
-import { SongContext } from '../context/songs';
+import { SongContext } from './songs';
 import { WidgetContext } from './widgets';
 import { useContext } from 'react';
 
