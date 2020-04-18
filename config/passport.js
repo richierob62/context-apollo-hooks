@@ -2,12 +2,12 @@ import 'dotenv/config';
 
 import FacebookStrategy from 'passport-facebook';
 import { GraphQLLocalStrategy } from 'graphql-passport';
-import axios from 'axios';
+import PassportGoogleOAuth from 'passport-google-oauth';
 import bcrypt from 'bcryptjs';
 import db from '../models';
 import passport from 'passport';
 
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GoogleStrategy = PassportGoogleOAuth.OAuth2Strategy;
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
@@ -39,7 +39,7 @@ passport.use(
   })
 );
 
-// Facebook login
+// Facebook auth
 const facebookOptions = {
   clientID: process.env.FACEBOOK_CLIENT_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
