@@ -14,6 +14,8 @@ import session from 'express-session';
 import typeDefs from './schema';
 import { v4 as uuid } from 'uuid';
 
+// redis server (session store)
+// --------------------------------------------------------------------------
 let RedisStore = connectRedis(session);
 let redisClient = redis.createClient();
 
@@ -25,6 +27,8 @@ redisClient.on('error', function (err) {
   console.log('Redis related error ' + err);
 });
 
+// express server & middleware
+// --------------------------------------------------------------------------
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
@@ -51,6 +55,8 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use('/', apiRoutes);
 
+// apollo server
+// --------------------------------------------------------------------------
 const server = new ApolloServer({
   typeDefs,
   resolvers,
