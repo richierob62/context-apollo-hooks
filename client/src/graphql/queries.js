@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import gql from 'graphql-tag';
 
 export const GET_SONGS = gql`
   query albums($artist: String) {
@@ -7,6 +7,17 @@ export const GET_SONGS = gql`
       id
       artist
       lyrics
+    }
+  }
+`;
+
+export const GET_USER = gql`
+  query {
+    currentUser {
+      id
+      firstName
+      lastName
+      email
     }
   }
 `;

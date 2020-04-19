@@ -13,10 +13,16 @@ router.get(
 
 router.get(
   '/facebook/callback',
-  passport.authenticate('facebook', {
-    successRedirect: `http://localhost:${process.env.PORT}/graphql`,
-    failureRedirect: `http://localhost:${process.env.PORT}/graphql`,
-  })
+  passport.authenticate('facebook'),
+  (req, res) => {
+    const user = req.user;
+    if (user) {
+      const { id, firstName, lastName, email } = user.dataValues;
+      res.json({ user: { id, firstName, lastName, email } });
+    } else {
+      res.json({ errors: [{ auth: false }] });
+    }
+  }
 );
 
 router.get(
@@ -26,12 +32,14 @@ router.get(
   })
 );
 
-router.get(
-  '/google/callback',
-  passport.authenticate('google', {
-    successRedirect: `http://localhost:${process.env.PORT}/graphql`,
-    failureRedirect: `http://localhost:${process.env.PORT}/graphql`,
-  })
-);
+router.get('/google/callback', passport.authenticate('google'), (req, res) => {
+  const user = req.user;
+  if (user) {
+    const { id, firstName, lastName, email } = user.dataValues;
+    res.json({ user: { id, firstName, lastName, email } });
+  } else {
+    res.json({ errors: [{ auth: false }] });
+  }
+});
 
 export default router;

@@ -4,6 +4,7 @@ import About from './About';
 import ContextProvider from '../context';
 import Home from './Home';
 import React from 'react';
+import Test from './Test';
 
 const App = () => {
   return (
@@ -11,7 +12,8 @@ const App = () => {
       <ContextProvider>
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Test />
+            {/* <Home /> */}
           </Route>
           <Route path="/about">
             <About />

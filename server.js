@@ -1,16 +1,29 @@
 import 'dotenv/config';
 
 import { ApolloServer } from 'apollo-server-express';
+import apiRoutes from './routes/api';
 import { buildContext } from 'graphql-passport';
+import connectRedis from 'connect-redis';
 import cors from 'cors';
 import db from './models';
 import express from 'express';
 import passport from './config/passport';
+import redis from 'redis';
 import resolvers from './resolvers';
-import routes from './routes/api';
 import session from 'express-session';
 import typeDefs from './schema';
 import { v4 as uuid } from 'uuid';
+
+let RedisStore = connectRedis(session);
+let redisClient = redis.createClient();
+
+redisClient.on('connect', function () {
+  console.log('Redis client connected');
+});
+
+redisClient.on('error', function (err) {
+  console.log('Redis related error ' + err);
+});
 
 const app = express();
 
@@ -20,9 +33,9 @@ app.use(express.json());
 app.use(
   session({
     genid: (req) => uuid(),
+    store: new RedisStore({ client: redisClient }),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false,
   })
 );
 
@@ -36,7 +49,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static('public'));
 }
 
-app.use('/', routes);
+app.use('/', apiRoutes);
 
 const server = new ApolloServer({
   typeDefs,
