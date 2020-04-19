@@ -1,31 +1,34 @@
 import 'dotenv/config';
 
 import { ApolloServer } from 'apollo-server-express';
+import ExpressMySQLSession from 'express-mysql-session';
 import apiRoutes from './routes/api';
 import { buildContext } from 'graphql-passport';
-import connectRedis from 'connect-redis';
 import cors from 'cors';
 import db from './models';
 import express from 'express';
 import passport from './config/passport';
-import redis from 'redis';
 import resolvers from './resolvers';
 import session from 'express-session';
 import typeDefs from './schema';
 import { v4 as uuid } from 'uuid';
 
-// redis server (session store)
+// mysql session store
 // --------------------------------------------------------------------------
-let RedisStore = connectRedis(session);
-let redisClient = redis.createClient();
-
-redisClient.on('connect', function () {
-  console.log('Redis client connected');
-});
-
-redisClient.on('error', function (err) {
-  console.log('Redis related error ' + err);
-});
+const MySQLStoreCreator = ExpressMySQLSession(session);
+const mySQLStoreOptions = {
+  host: process.env.SESSION_STORE_HOST,
+  port: process.env.SESSION_STORE_PORT,
+  user: process.env.SESSION_STORE_USER,
+  password: process.env.SESSION_STORE_PASSWORD,
+  database: process.env.SESSION_STORE_DATABASE,
+  clearExpired: true,
+  checkExpirationInterval: 15 * 60 * 1000,
+  expiration: 24 * 60 * 60 * 1000,
+  createDatabaseTable: true,
+  connectionLimit: 1,
+};
+const sessionStore = new MySQLStoreCreator(mySQLStoreOptions);
 
 // express server & middleware
 // --------------------------------------------------------------------------
@@ -37,9 +40,11 @@ app.use(express.json());
 app.use(
   session({
     genid: (req) => uuid(),
-    store: new RedisStore({ client: redisClient }),
+    key: process.env.SESSION_COOKIE_NAME,
     secret: process.env.SESSION_SECRET,
+    store: sessionStore,
     resave: false,
+    saveUninitialized: false,
   })
 );
 
